@@ -1,6 +1,6 @@
-# MediTrackPros 
-## Empowering health management with seamless tracking and organization.
-### MediTrackPros is a web application designed to simplify medical record tracking, appointment scheduling, and medication management for patients and healthcare providers. Built with modern web technologies, it offers an intuitive interface and reliable performance, hosted on Netlify for fast and secure access.
+<h1>MediTrackPros</h1> 
+<h2>Empowering health management with seamless tracking and organization.</h2>
+<h3>MediTrackPros is a web application designed to simplify medical record tracking, appointment scheduling, and medication management for patients and healthcare providers. Built with modern web technologies, it offers an intuitive interface and reliable performance, hosted on Netlify for fast and secure access.</h3>
 Live Demo: <a href="https://meditrackpros.netlify.app">meditrackpros.netlify.app</a>
 
 #### Run localy using below steps
@@ -26,4 +26,4 @@ Step 5
 ```bash
 http://localhost
 ```
-<p>Visit the step5 url in your browser</p>
+<p>Visit the http://localhost in your browser</p>

@@ -25,7 +25,7 @@ class Employee(models.Model):
     employee_id = models.CharField(max_length=50, unique=True)
     
     def __str__(self):
-        return f"{self.user.first_name} {self.hospital}"
+        return f"{self.user.username}"
     
     class Meta:
         constraints = [

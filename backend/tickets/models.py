@@ -52,14 +52,26 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.ticket_id}: {self.title}"
     
+    #def save(self, *args, **kwargs):
+    #    if not self.ticket_id:
+    #        with transaction.atomic():
+    #            last_ticket = Ticket.objects.filter(hospital=self.hospital).order_by('-id').first()
+    #            last_number = int(last_ticket.ticket_id.split('-')[1]) if last_ticket and last_ticket.ticket_id else 1000
+    #            self.ticket_id = f"TIC{last_number + 1}"
+    #    super().save(*args, **kwargs)
     def save(self, *args, **kwargs):
         if not self.ticket_id:
             with transaction.atomic():
                 last_ticket = Ticket.objects.filter(hospital=self.hospital).order_by('-id').first()
-                last_number = int(last_ticket.ticket_id.split('-')[1]) if last_ticket and last_ticket.ticket_id else 1000
-                self.ticket_id = f"TIC{last_number + 1}"
-        super().save(*args, **kwargs)
-        
+                if last_ticket and last_ticket.ticket_id and '-' in last_ticket.ticket_id:
+                    try:
+                        last_number = int(last_ticket.ticket_id.split('-')[1])
+                    except (IndexError, ValueError):
+                        last_number = 1000  # Fallback to 1000 if parsing fails
+                else:
+                    last_number = 1000  # Start at 1000 if no valid ticket_id
+                self.ticket_id = f"TIC-{last_number + 1:04d}"  # Ensure consistent format
+        super().save(*args, **kwargs)    
     
 class TicketComment(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments')

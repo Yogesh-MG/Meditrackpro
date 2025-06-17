@@ -26,4 +26,9 @@ Step 5
 ```bash
 http://localhost
 ```
+Step 6 : To generate the dummy data
+```bash
+docker-compose exec backend python manage.py seed
+```
+
 <p>Visit the http://localhost in your browser</p>

@@ -18,8 +18,8 @@ const getBaseUrl = (): string => {
 
   // Local dev fallback with instanceKey
   return instanceKey === "shared" 
-    ? "http://localhost:8000" 
-    : `http://${instanceKey}.localhost:8000`;
+    ? "http://localhost" 
+    : `http://${instanceKey}.localhost`;
 };
 
 export const baseUrl = getBaseUrl();

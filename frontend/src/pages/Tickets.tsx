@@ -302,7 +302,7 @@ const Tickets = () => {
                           <div className="text-xs text-muted-foreground">{ticket.location || "No Location"}</div>
                         </div>
                       </TableCell>
-                      <TableCell>{ticket.device?.device_id || "--"}</TableCell>
+                      <TableCell>{ticket.device?.asset_number || "--"}</TableCell>
                       <TableCell>{renderPriorityBadge(ticket.priority)}</TableCell>
                       <TableCell>{renderStatusBadge(ticket.status)}</TableCell>
                       <TableCell>
@@ -311,9 +311,7 @@ const Tickets = () => {
                           : "--"}
                       </TableCell>
                       <TableCell>
-                        {ticket.assigned_to
-                          ? `${ticket.assigned_to.first_name || ""} ${ticket.assigned_to.last_name || ""}`.trim() || "--"
-                          : "--"}
+                        {ticket.assigned_to?.name || "--"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button

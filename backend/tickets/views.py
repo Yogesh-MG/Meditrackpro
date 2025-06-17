@@ -5,7 +5,7 @@ from .models import Ticket, TicketComment
 from .serializers import TicketSerializer, TicketCommentSerializer
 from hospitals.models import Hospital
 from employees.models import Employee
-from hospitals.permissions import IsTechnician
+from hospitals.permissions import IsTechnicianOrTicketCreator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from django.db.models import Q
@@ -50,7 +50,7 @@ class TicketListCreateView(generics.ListCreateAPIView):
         
 class TicketDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TicketSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTechnician]
+    permission_classes = [permissions.IsAuthenticated, IsTechnicianOrTicketCreator]
     lookup_field = 'ticket_id'
     
     def get_queryset(self):

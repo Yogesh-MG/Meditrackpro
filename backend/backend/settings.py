@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'inventory.apps.InventoryConfig',
     'suppliers.apps.SuppliersConfig',
     'tickets.apps.TicketsConfig',
+    'compliance.apps.ComplianceConfig',
 ]
 
 MIDDLEWARE = [
@@ -99,7 +100,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-db = 'lite'
+db = 'post'
 
 if db == 'lite':
     DATABASES = {
@@ -164,9 +165,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-# settings.py
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
+STATICFILES_DIRS = [
+    BASE_DIR/'static',
+]# settings.py
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type

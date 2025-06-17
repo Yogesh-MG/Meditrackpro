@@ -10,7 +10,7 @@ class Supplier(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='suppliers')
     name = models.CharField(max_length=255)
     contact_name = models.CharField(max_length=100, blank=True)
-    contact_email = models.EmailField(max_length=20, blank=True, null=True)
+    contact_email = models.EmailField(max_length=255, blank=True, null=True)
     contact_phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     categories = models.ManyToManyField(Category, blank=True)

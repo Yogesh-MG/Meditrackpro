@@ -79,7 +79,7 @@ const Suppliers = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const hospitalId = parseInt(localStorage.getItem('hospital_id') || '201');
+  const hospitalId = parseInt(localStorage.getItem('hospitalid'));
   const token = localStorage.getItem('token');
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
 

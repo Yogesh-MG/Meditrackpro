@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { AlertTriangle, CheckCircle, FileText, Send } from "lucide-react";
+import { AlertTriangle, CheckCircle, FileText, Send, ScanLine } from "lucide-react";
 import axios from "axios";
 import PageContainer from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ const ticketFormSchema = z.object({
     .min(3, { message: "Title needs at least 3 characters." })
     .nonempty({ message: "Title cannot be empty, bro!" }),
   deviceId: z.string().optional(),
+  nfcUuid: z.string().optional(), // New field for NFC UUID
   category: z.string({ required_error: "Please pick a category!" }),
   priority: z.string({ required_error: "Please select a priority level." }),
   description: z
@@ -49,14 +50,17 @@ type TicketFormValues = z.infer<typeof ticketFormSchema>;
 const TicketRaise = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [employeeId, setEmployeeId] = useState(null); // State for employee_id
-  const [fetchError, setFetchError] = useState(null); // State for fetch errors
+  const [employeeId, setEmployeeId] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
+  const [isNfcSupported, setIsNfcSupported] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
 
   const form = useForm<TicketFormValues>({
     resolver: zodResolver(ticketFormSchema),
     defaultValues: {
       title: "",
       deviceId: "",
+      nfcUuid: "",
       category: "",
       priority: "medium",
       description: "",
@@ -65,6 +69,13 @@ const TicketRaise = () => {
   });
 
   useEffect(() => {
+    // Check if Web NFC is supported
+    if ("NDEFReader" in window) {
+      setIsNfcSupported(true);
+    } else {
+      console.warn("Web NFC is not supported in this browser.");
+    }
+
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -87,6 +98,88 @@ const TicketRaise = () => {
     fetchUserProfile();
   }, []);
 
+  const handleNfcScan = async () => {
+    if (!isNfcSupported) {
+      toast({
+        title: "Error",
+        description: "NFC scanning is not supported in this browser.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsScanning(true);
+    try {
+      const ndef = new window.NDEFReader();
+      await ndef.scan();
+      toast({
+        title: "Scanning",
+        description: "Please tap an NFC tag.",
+      });
+
+      ndef.onreading = async ({ message }) => {
+        let nfcUuid = null;
+        for (const record of message.records) {
+          if (record.recordType === "text") {
+            const textDecoder = new TextDecoder(record.encoding);
+            nfcUuid = textDecoder.decode(record.data);
+            break;
+          }
+        }
+
+        if (nfcUuid) {
+          try {
+            const hospitalId = localStorage.getItem("hospitalid"); // Replace with dynamic hospital ID
+            const response = await axios.get(
+              `${baseUrl}/api/${hospitalId}/devices/nfc/${nfcUuid}/`,
+              {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+              }
+            );
+            const deviceId = response.data.id;
+            form.setValue("deviceId", deviceId.toString());
+            form.setValue("nfcUuid", nfcUuid);
+            toast({
+              title: "Success",
+              description: `Device ID ${deviceId} loaded from NFC tag.`,
+            });
+          } catch (error) {
+            console.error("Error fetching device by NFC UUID:", error);
+            toast({
+              title: "Error",
+              description: error.response?.data?.error || "No device found for this NFC tag.",
+              variant: "destructive",
+            });
+          }
+        } else {
+          toast({
+            title: "Error",
+            description: "No valid UUID found on NFC tag.",
+            variant: "destructive",
+          });
+        }
+        setIsScanning(false);
+      };
+
+      ndef.onreadingerror = () => {
+        toast({
+          title: "Error",
+          description: "Failed to read NFC tag. Please try again.",
+          variant: "destructive",
+        });
+        setIsScanning(false);
+      };
+    } catch (error) {
+      console.error("NFC scan error:", error);
+      toast({
+        title: "Error",
+        description: `${error}`,
+        variant: "destructive",
+      });
+      setIsScanning(false);
+    }
+  };
+
   const onSubmit = async (data) => {
     if (!employeeId) {
       toast({
@@ -99,17 +192,18 @@ const TicketRaise = () => {
 
     setIsSubmitting(true);
     try {
-      const hospitalId = 1; // Replace with dynamic hospital ID
+      const hospitalId = localStorage.getItem("hospital_id") || "1"; // Replace with dynamic hospital ID
       const response = await axios.post(
-        `http://localhost:8000/api/${hospitalId}/tickets/`,
+        `${baseUrl}/api/${hospitalId}/tickets/`,
         {
           title: data.title,
           device_id: data.deviceId || null,
+          nfc_uuid: data.nfcUuid || null, // Include NFC UUID
           category: data.category,
           priority: data.priority,
           description: data.description,
           location: data.location,
-          created_by_id: employeeId, // Use fetched employee_id
+          created_by_id: employeeId,
           assigned_to_id: null,
         },
         {
@@ -181,10 +275,25 @@ const TicketRaise = () => {
                       <FormItem>
                         <FormLabel>Device ID (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter device ID if applicable" {...field} />
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter device ID or scan NFC"
+                              {...field}
+                              disabled={isScanning}
+                            />
+                            <Button
+                              type="button"
+                              onClick={handleNfcScan}
+                              disabled={isScanning || !isNfcSupported}
+                              className="flex gap-2"
+                            >
+                              <ScanLine size={16} />
+                              {isScanning ? "Scanning..." : "Scan NFC"}
+                            </Button>
+                          </div>
                         </FormControl>
                         <FormDescription>
-                          If this is about a specific device
+                          Scan an NFC tag or enter the device ID manually
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

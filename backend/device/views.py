@@ -6,6 +6,21 @@ from hospitals.models import Hospital
 from django.shortcuts import get_object_or_404
 from .models import Device, ServiceLog, Specification, Documentation, IncidentReport, Calibration
 from .serializers import DeviceSerializer, CalibrationSerializer, ServiceLogSerializer, SpecificationSerializer, DocumentationSerializer, IncidentReportSerializer
+from rest_framework.views import APIView
+
+class DeviceByNFCView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, hospital_id, nfc_uuid):
+        try:
+            device = Device.objects.get(hospital_id=hospital_id, nfc_uuid=nfc_uuid)
+            serializer = DeviceSerializer(device)
+            return Response({'id': device.id, 'device_id':device.device_id}, status=status.HTTP_200_OK)
+        except Device.DoesNotExist:
+            return Response(
+                {'error': "Device not found for this NFC UUID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 class DeviceListView(generics.ListCreateAPIView):
     serializer_class = DeviceSerializer

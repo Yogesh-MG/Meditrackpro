@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ScanLine } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -26,11 +26,14 @@ const DeviceOrder = () => {
   const { toast } = useToast();
   const [installationDate, setInstallationDate] = useState<Date | undefined>();
   const [warrantyDate, setWarrantyDate] = useState<Date | undefined>();
+  const [isNfcSupported, setIsNfcSupported] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     make_model: "",
     manufacture: "",
     serial_number: "",
+    nfc_uuid: "", // Field for NFC UUID
     asset_number: "",
     asset_details: "Excellent",
     is_active: "Operational",
@@ -52,6 +55,15 @@ const DeviceOrder = () => {
     enabled: !!token && !!hospitalId,
   });
 
+  // Check for Web NFC support
+  useEffect(() => {
+    if ("NDEFReader" in window) {
+      setIsNfcSupported(true);
+    } else {
+      console.warn("Web NFC is not supported in this browser.");
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -59,6 +71,70 @@ const DeviceOrder = () => {
 
   const handleSelectChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleNfcScan = async () => {
+    if (!isNfcSupported) {
+      toast({
+        title: "Error",
+        description: "NFC scanning is not supported in this browser.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsScanning(true);
+    try {
+      const ndef = new window.NDEFReader();
+      await ndef.scan();
+      toast({
+        title: "Scanning",
+        description: "Please tap an NFC tag.",
+      });
+
+      ndef.onreading = ({ message }) => {
+        let nfcUuid = null;
+        for (const record of message.records) {
+          if (record.recordType === "text") {
+            const textDecoder = new TextDecoder(record.encoding);
+            nfcUuid = textDecoder.decode(record.data);
+            break;
+          }
+        }
+
+        if (nfcUuid) {
+          setFormData((prev) => ({ ...prev, nfc_uuid: nfcUuid }));
+          toast({
+            title: "Success",
+            description: `NFC UUID ${nfcUuid} loaded.`,
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "No valid UUID found on NFC tag.",
+            variant: "destructive",
+          });
+        }
+        setIsScanning(false);
+      };
+
+      ndef.onreadingerror = () => {
+        toast({
+          title: "Error",
+          description: "Failed to read NFC tag. Please try again.",
+          variant: "destructive",
+        });
+        setIsScanning(false);
+      };
+    } catch (error) {
+      console.error("NFC scan error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to start NFC scan. Please try again.",
+        variant: "destructive",
+      });
+      setIsScanning(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,6 +154,7 @@ const DeviceOrder = () => {
       make_model: formData.make_model,
       manufacture: formData.manufacture || null,
       serial_number: formData.serial_number,
+      nfc_uuid: formData.nfc_uuid || null, // Include NFC UUID
       date_of_installation: installationDate ? format(installationDate, "yyyy-MM-dd") : null,
       warranty_until: warrantyDate ? format(warrantyDate, "yyyy-MM-dd") : null,
       asset_number: formData.asset_number,
@@ -98,7 +175,7 @@ const DeviceOrder = () => {
       console.error("Add device error:", error.response?.data);
       toast({
         title: "Error",
-        description: error.response?.data?.detail || "Failed to add device.",
+        description: error.response?.data?.detail || "Failed to add device. Ensure NFC UUID is unique if provided.",
         variant: "destructive",
       });
     }
@@ -180,6 +257,27 @@ const DeviceOrder = () => {
                     onChange={handleInputChange}
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nfc_uuid">NFC UUID (Optional)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="nfc_uuid"
+                      placeholder="Scan NFC tag to fill"
+                      value={formData.nfc_uuid}
+                      onChange={handleInputChange}
+                      disabled={isScanning}
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleNfcScan}
+                      disabled={isScanning || !isNfcSupported}
+                      className="flex gap-2"
+                    >
+                      <ScanLine size={16} />
+                      {isScanning ? "Scanning..." : "Scan NFC"}
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="asset_number">Asset Number *</Label>

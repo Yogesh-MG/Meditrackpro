@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-db = 'post'
+db = 'lite'
 
 if db == 'lite':
     DATABASES = {

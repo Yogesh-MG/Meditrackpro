@@ -208,7 +208,7 @@ const DeviceDetail = () => {
   const [showMaintenanceForm, setShowMaintenanceForm] = useState(false);
   const [showCalibrationForm, setShowCalibrationForm] = useState(false);
 
-  const hospitalId = localStorage.getItem("hospital_id");
+  const hospitalId = localStorage.getItem("hospitalid");
   const token = localStorage.getItem("token");
   const headers = { Authorization: `Bearer ${token}` };
 

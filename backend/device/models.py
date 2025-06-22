@@ -22,6 +22,7 @@ class Device(models.Model):
     is_active = models.CharField(max_length=50,null=True, choices=[('Operational','Operational'),('Needs_Calibration','Needs_Calibration'),('Under_Maintenance','Under_Maintenance')],default='Operational')
     department = models.CharField(max_length=50, blank=True, null=True)
     Room = models.CharField(max_length=50, blank=True, null=True)
+    nfc_uuid = models.CharField(max_length=64, unique=True, null=True, blank=True)
     next_calibration = models.DateField(null=True, blank=True)
     qr_code = models.ImageField(upload_to='device_qr_codes/%Y/%m/%d/', null=True, blank=True)
     
@@ -33,7 +34,8 @@ class Device(models.Model):
         qr_data = {
             "hospital_id": self.hospital_id,
             "device_id": self.id,
-            "asset_number": self.asset_number
+            "asset_number": self.asset_number,
+            "nfc_id": self.nfc_uuid
         }
         qr_url = f"https://meditrackpro.com/devices/{self.hospital_id}/{self.id}"  # Example URL for mobile app
         qr = qrcode.QRCode(
@@ -42,7 +44,7 @@ class Device(models.Model):
             box_size=10,
             border=4,
         )
-        qr.add_data(qr_url)  # Encode the URL (can change to JSON if needed)
+        qr.add_data(qr_data)  # Encode the URL (can change to JSON if needed)
         qr.make(fit=True)
         
         # Create image

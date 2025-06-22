@@ -1,4 +1,5 @@
 import random
+import uuid  # Added for UUID generation
 from faker import Faker
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -117,9 +118,10 @@ def seed_data():
             for j in range(10):
                 # First employee is always an engineer
                 role = 'engineer' if j == 0 else random.choice(roles)
+                username = fake.email()
                 user = User.objects.create_user(
-                    username=fake.email(),
-                    email=fake.email(),
+                    username=username,
+                    email=username,
                     password='password123',
                     first_name=fake.first_name(),
                     last_name=fake.last_name()
@@ -197,12 +199,15 @@ def seed_data():
 
             # Create 20 Devices
             for j in range(20):
+                # Generate a unique UUID for nfc_uuid
+                nfc_uuid = str(uuid.uuid4())
                 device = Device.objects.create(
                     hospital=hospital,
                     name=fake.word().capitalize() + f" Device {j+1}",
                     make_model=fake.word().capitalize() + " Model",
                     manufacture=fake.company(),
                     serial_number=f"H{hospital.id}-SER{j+1:04d}",
+                    nfc_uuid=nfc_uuid,  # Assign generated UUID
                     date_of_installation=fake.date_between(start_date='-5y', end_date='today'),
                     warranty_until=fake.date_between(start_date='today', end_date='+3y'),
                     asset_number=f"H{hospital.id}-AST{j+1:04d}",

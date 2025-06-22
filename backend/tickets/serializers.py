@@ -8,6 +8,7 @@ from hospitals.serilaizers import HospitalSerializer  # Fixed typo: serilaizers 
 from employees.serializers import EmployeeSerializer
 from django.utils import timezone
 
+
 class TicketCommentSerializer(serializers.ModelSerializer):
     author = EmployeeSerializer(read_only=True)
     author_id = serializers.CharField(write_only=True, required=True)
@@ -42,8 +43,9 @@ class TicketSerializer(serializers.ModelSerializer):
     device_id = serializers.PrimaryKeyRelatedField(
         queryset=Device.objects.all(), source='device', write_only=True, allow_null=True
     )
+    nfc_uuid = serializers.CharField(write_only=True, required=False, allow_blank=True)  # New field for NFC UUID
     created_by = EmployeeSerializer(read_only=True)
-    created_by_id = serializers.CharField(write_only=True, allow_null=False)  # Require created_by_id
+    created_by_id = serializers.CharField(write_only=True, allow_null=False)
     assigned_to = EmployeeSerializer(read_only=True, allow_null=True)
     assigned_to_id = serializers.CharField(write_only=True, allow_null=True)
     hospital = HospitalSerializer(read_only=True)
@@ -52,16 +54,15 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'id', 'ticket_id', 'hospital', 'title', 'device', 'device_id', 'category',
-            'priority', 'status', 'location', 'created_by', 'created_by_id', 'assigned_to',
-            'assigned_to_id', 'description', 'created_at', 'updated_at', 'comments'
+            'id', 'ticket_id', 'hospital', 'title', 'device', 'device_id', 'nfc_uuid',
+            'category', 'priority', 'status', 'location', 'created_by', 'created_by_id',
+            'assigned_to', 'assigned_to_id', 'description', 'created_at', 'updated_at', 'comments'
         ]
         read_only_fields = ['ticket_id', 'hospital', 'created_at', 'updated_at']
 
     def validate_created_by_id(self, value):
         try:
             employee = Employee.objects.get(employee_id=value)
-            print(f"Validated created_by_id: {value} -> {employee}")  # Debug log
             return employee
         except Employee.DoesNotExist:
             raise serializers.ValidationError(f"Employee with ID {value} does not exist.")
@@ -70,19 +71,16 @@ class TicketSerializer(serializers.ModelSerializer):
         if not value:
             return None
         try:
-            employee = Employee.objects.get(employee_id=value)  # Use employee_id, not id
-            if employee.role != 'engineer':  # Ensure role is 'engineer'
+            employee = Employee.objects.get(employee_id=value)
+            if employee.role != 'engineer':
                 raise serializers.ValidationError(f"Employee with ID {value} must be a Biomedical Engineer.")
-            print(f"Validated assigned_to_id: {value} -> {employee}")  # Debug log
-            return employee.id
+            return employee
         except Employee.DoesNotExist:
             raise serializers.ValidationError(f"Employee with ID {value} does not exist.")
 
     def validate(self, data):
-        # Skip validation for partial updates (PATCH)
         if self.partial:
             return data
-        # Full validation for POST
         if not data.get('title'):
             raise serializers.ValidationError({"title": "Title cannot be empty, bro!"})
         if len(data.get('title')) < 3:
@@ -95,22 +93,30 @@ class TicketSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"location": "Where’s this happening? Add a location."})
         if not data.get('category'):
             raise serializers.ValidationError({"category": "Specify a category."})
+
+        # Validate NFC UUID if provided
+        nfc_uuid = data.get('nfc_uuid')
+        device = data.get('device')
+        if nfc_uuid and not device:
+            try:
+                device = Device.objects.get(nfc_uuid=nfc_uuid, hospital_id=self.context['request'].parser_context['kwargs']['hospital_id'])
+                data['device'] = device
+            except Device.DoesNotExist:
+                raise serializers.ValidationError({"nfc_uuid": "No device found for this NFC UUID."})
+        elif nfc_uuid and device and device.nfc_uuid != nfc_uuid:
+            raise serializers.ValidationError({"nfc_uuid": "NFC UUID does not match the selected device."})
+
         return data
 
     def create(self, validated_data):
-        print("Validated Data:", validated_data)  # Debug log
-        # Extract created_by_id and map to created_by
         created_by_employee = validated_data.pop('created_by_id', None)
         if not created_by_employee:
             raise serializers.ValidationError({"created_by_id": "Employee is required."})
         validated_data['created_by'] = created_by_employee
-        # Extract assigned_to_id and map to assigned_to
         assigned_to_employee = validated_data.pop('assigned_to_id', None)
         if assigned_to_employee:
             validated_data['assigned_to'] = assigned_to_employee
-        # Remove device_id if present (handled by source='device')
         validated_data.pop('device_id', None)
-        print("Data before save:", validated_data)  # Debug log
+        validated_data.pop('nfc_uuid', None)  # Remove nfc_uuid as it's not a model field
         ticket = Ticket.objects.create(**validated_data)
-        print("Created ticket:", ticket)  # Debug log
         return ticket

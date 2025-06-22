@@ -57,6 +57,7 @@ class DeviceSerializer(serializers.ModelSerializer):
     incident_reports = IncidentReportSerializer(many=True, read_only=True)
     next_calibration = serializers.SerializerMethodField()  # Use method field instead of DateField
     qr_code = serializers.ImageField(read_only=True, allow_null=True)
+    nfc_uuid = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     
     def get_next_calibration(self, obj):
         latest_calibration = obj.calibrations.order_by('-calibration_date').first()
@@ -66,6 +67,16 @@ class DeviceSerializer(serializers.ModelSerializer):
             print(f"  Calibration ID: {latest_calibration.id}, next_calibration: {latest_calibration.next_calibration}")
         return latest_calibration.next_calibration if latest_calibration else None
 
+    def validate_nfc_uuid(self, value):
+        if value:
+            # Check if NFC UUID is unique for this hospital
+            hospital_id = self.context['request'].parser_context['kwargs']['hospital_id']
+            if Device.objects.filter(hospital_id=hospital_id, nfc_uuid=value).exclude(
+                id=self.instance.id if self.instance else None
+            ).exists():
+                raise serializers.ValidationError("NFC UUID must be unique for this hospital.")
+        return value
+    
     def update(self, instance, validated_data):
         next_calibration = validated_data.pop('next_calibration', None)
         validated_data.pop('asset_number', None)
@@ -100,7 +111,7 @@ class DeviceSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'hospital', 'name', 'make_model', 'manufacture', 'serial_number',
             'date_of_installation', 'warranty_until', 'asset_number', 'asset_details',
-            'is_active', 'department', 'Room', 'next_calibration', 'service_logs',
+            'nfc_uuid', 'is_active', 'department', 'Room', 'next_calibration', 'service_logs',
             'specification', 'documentation', 'calibrations', 'incident_reports',
             'qr_code'
         ]

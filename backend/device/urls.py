@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import DeviceListView, DeviceDetailView, ServiceLogCreateView, CalibrationCreateView,SpecificationCreateView, DocumentationCreateView,IncidentReportCreateView
-from .views import ServiceLogUpdateView, CalibrationUpdateView
+from .views import ServiceLogUpdateView, CalibrationUpdateView, DeviceByNFCView
 
 urlpatterns = [
     # Multi-tenant
@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:hospital_id>/devices/<int:device_id>/incident-reports/', IncidentReportCreateView.as_view(), name='incident-report-create'),
     path('<int:hospital_id>/devices/<int:device_id>/service-logs/<int:pk>/', ServiceLogUpdateView.as_view(), name='service-log-update'),
     path('<int:hospital_id>/devices/<int:device_id>/calibrations/<int:pk>/', CalibrationUpdateView.as_view(), name='calibration-update'),
+    path('<int:hospital_id>/devices/nfc/<str:nfc_uuid>/', DeviceByNFCView.as_view(), name='device-by-nfc'),
 ]

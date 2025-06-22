@@ -96,7 +96,7 @@ const Devices = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      navigate('/');
       toast({ title: 'Unauthorized', description: 'Please log in.', variant: 'destructive' });
       return;
     }

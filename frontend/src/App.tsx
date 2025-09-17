@@ -21,6 +21,7 @@ import Billing from "./pages/Billing";
 import Invoice from "./pages/Invoice";
 import Patients from "./pages/Patients";  
 import PatientAdd from "./pages/PatientAdd";
+import PatientDetail from "./pages/PatientDetail";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
@@ -28,6 +29,7 @@ import Reports from "./pages/Reports";
 import Tickets from "./pages/Tickets";
 import TicketDetail from "./pages/TicketDetail";
 import TicketRaise from "./pages/TicketRaise";
+import AITestLab from "./pages/AITestLab";
 
 //DEMO
 import Dashboarddemo from "./pages/demo/Dashboard-demo";
@@ -78,6 +80,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/hospital-registration" element={<HospitalRegistration />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/ai-test-lab" element={<AITestLab />} />
           <Route path="/devices" element={<Devices />} />
           <Route path="/devices/order" element={<DeviceOrder />} />
           <Route path="/devices/:id" element={<DeviceDetail />} />
@@ -89,14 +92,18 @@ const App = () => (
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/suppliers/add" element={<SupplierAdd />} />
           <Route path="/suppliers/edit/:supplierId" element={<SupplierEdit />} />
-
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/patients/add" element={<PatientAdd />} />
+          <Route path="/patients/:id" element={<PatientDetail />} />
+          <Route path="/ticket" element={<Tickets />} />
+          <Route path="/ticket/:id" element={<TicketDetail />} />
+          <Route path="/ticket-raise" element={<TicketRaise/>}/>
+          
           {/* Above backend completed"*"*/}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/billing/invoice" element={<Invoice />} />
-          <Route path="/patients" element={<Patients />} />
-          <Route path="/patients/add" element={<PatientAdd />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />

@@ -25,7 +25,7 @@ class DeviceByNFCView(APIView):
 class DeviceListView(generics.ListCreateAPIView):
     serializer_class = DeviceSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         hospital_id = self.kwargs.get('hospital_id')
         if hospital_id:

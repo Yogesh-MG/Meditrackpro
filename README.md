@@ -32,3 +32,13 @@ docker-compose exec backend python manage.py seed
 ```
 
 <p>Visit the http://localhost in your browser</p>
+
+#### Build a apk/ios applicationn
+step 1
+```bash
+cd Meditrackpro
+```
+step 2
+```bash
+./app.sh
+```

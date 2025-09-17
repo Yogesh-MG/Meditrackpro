@@ -9,7 +9,7 @@ from inventory.models import InventoryItem
 
 class SupplierListView(generics.GenericAPIView):
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticated, IsInventoryManager]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         hospital_id = self.kwargs['hospital_id']

@@ -1,5 +1,5 @@
 import random
-import uuid  # Added for UUID generation
+import uuid
 from faker import Faker
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -15,6 +15,7 @@ from inventory.models import Category, Unit, InventoryItem
 from suppliers.models import Supplier, PurchaseOrder, PurchaseOrderItem
 from tickets.models import Ticket, TicketComment
 from compliance.models import ComplianceStandard, Audit, ComplianceDocument
+from patient.models import Patient, EmergencyContact, Vital, MedicalHistory, Medication, Appointment
 from django.conf import settings
 
 # Initialize Faker
@@ -27,34 +28,32 @@ os.makedirs(MEDIA_ROOT, exist_ok=True)
 def create_dummy_file(filename):
     """Create a dummy file for FileField."""
     file_path = os.path.join(MEDIA_ROOT, filename)
-    with open(file_path, 'w') as f:
-        f.write("Dummy content for " + filename)
-    return File(open(file_path, 'rb'), name=filename)
+    try:
+        with open(file_path, 'w') as f:
+            f.write("Dummy content for " + filename)
+        return File(open(file_path, 'rb'), name=filename)
+    except Exception as e:
+        print(f"Error creating dummy file {filename}: {e}")
+        return None
 
 def seed_data():
     print("Starting database seeding...")
     # Clear existing data in reverse dependency order
-    ComplianceDocument.objects.all().delete()
-    Audit.objects.all().delete()
-    ComplianceStandard.objects.all().delete()
-    TicketComment.objects.all().delete()
-    Ticket.objects.all().delete()
-    PurchaseOrderItem.objects.all().delete()
-    PurchaseOrder.objects.all().delete()
-    Supplier.objects.all().delete()
-    InventoryItem.objects.all().delete()
-    Unit.objects.all().delete()
-    Category.objects.all().delete()
-    IncidentReport.objects.all().delete()
-    Calibration.objects.all().delete()
-    Documentation.objects.all().delete()
-    Specification.objects.all().delete()
-    ServiceLog.objects.all().delete()
-    Device.objects.all().delete()
-    Employee.objects.all().delete()
-    Subscription.objects.all().delete()
-    Hospital.objects.all().delete()
-    User.objects.exclude(is_superuser=True).delete()
+    models_to_clear = [
+        ComplianceDocument, Audit, ComplianceStandard,
+        TicketComment, Ticket,
+        PurchaseOrderItem, PurchaseOrder, Supplier,
+        InventoryItem, Unit, Category,
+        IncidentReport, Calibration, Documentation, Specification, ServiceLog, Device,
+        Appointment, Medication, MedicalHistory, Vital, EmergencyContact, Patient,
+        Employee, Subscription, Hospital,
+        User
+    ]
+    for model in models_to_clear:
+        if model == User:
+            model.objects.exclude(is_superuser=True).delete()
+        else:
+            model.objects.all().delete()
     print("Existing data cleared.")
 
     # Create superuser for hospital admins
@@ -79,6 +78,7 @@ def seed_data():
     units = []
     inventory_items = []
     suppliers = []
+    patients = []
 
     # Create 5 Hospitals
     for i in range(5):
@@ -116,7 +116,6 @@ def seed_data():
             # Create 10 Employees, ensuring at least one engineer
             roles = ['doctor', 'nurse', 'staff', 'receptionist', 'other']
             for j in range(10):
-                # First employee is always an engineer
                 role = 'engineer' if j == 0 else random.choice(roles)
                 username = fake.email()
                 user = User.objects.create_user(
@@ -139,6 +138,100 @@ def seed_data():
                 )
                 employees.append(employee)
             print(f"Created {len([e for e in employees if e.hospital == hospital and e.role == 'engineer'])} engineers for hospital {hospital.id}")
+
+            # Create 10 Patients
+            doctors = [e for e in employees if e.hospital == hospital and e.role == 'doctor']
+            for j in range(10):
+                # Randomly decide if insurance details should be included (50% chance)
+                include_insurance = random.choice([True, False])
+                patient = Patient.objects.create(
+                    hospital=hospital,
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    date_of_birth=fake.date_of_birth(minimum_age=18, maximum_age=80),
+                    gender=random.choice(['male', 'female', 'other']),
+                    email=fake.email(),
+                    phone_number=fake.phone_number()[:15],
+                    address=fake.street_address(),
+                    city=fake.city(),
+                    state=fake.state(),
+                    postal_code=fake.zipcode(),
+                    country='India',
+                    blood_type=random.choice(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+                    height=random.uniform(150, 200),
+                    weight=random.uniform(50, 120),
+                    primary_physician=random.choice(doctors) if doctors else None,
+                    allergies=', '.join(fake.words(nb=random.randint(0, 3), unique=True)) if random.choice([True, False]) else None,
+                    medical_conditions=', '.join(fake.words(nb=random.randint(0, 3), unique=True)) if random.choice([True, False]) else None,
+                    medication=', '.join(fake.words(nb=random.randint(0, 3), unique=True)) if random.choice([True, False]) else None,
+                    insurance_provider=fake.company() if include_insurance else None,
+                    policy_number=fake.bothify(text='POL####-#####') if include_insurance else None,
+                    group_number=fake.bothify(text='GRP####') if include_insurance else None,
+                    policy_holder=fake.name() if include_insurance else None,
+                    relationship_to_holder=random.choice(['self', 'spouse', 'child', 'other']) if include_insurance else None,
+                    coverage_start_date=fake.date_between(start_date='-2y', end_date='today') if include_insurance else None,
+                    coverage_end_date=fake.date_between(start_date='today', end_date='+2y') if include_insurance else None,
+                    has_secondary_insurance=random.choice([True, False]) if include_insurance else False,
+                    status=random.choice(['Active', 'Inactive']),
+                    last_visit=fake.date_between(start_date='-1y', end_date='today')
+                )
+                patients.append(patient)
+                print(f"Created patient: {patient.patient_id} for hospital {hospital.id}")
+
+                # Create 1-2 Emergency Contacts
+                for _ in range(random.randint(1, 2)):
+                    EmergencyContact.objects.create(
+                        patient=patient,
+                        name=fake.name(),
+                        relationship=random.choice(['spouse', 'parent', 'child', 'sibling', 'friend']),
+                        phone=fake.phone_number()[:15]
+                    )
+
+                # Create 1-3 Vitals
+                for _ in range(random.randint(1, 3)):
+                    Vital.objects.create(
+                        patient=patient,
+                        heart_rate=random.randint(60, 100),
+                        blood_pressure=f"{random.randint(100, 140)}/{random.randint(60, 90)}",
+                        temperature=random.uniform(97.0, 99.5),
+                        respiratory_rate=random.randint(12, 20),
+                        oxygen_saturation=random.randint(95, 100),
+                        recorded_at=fake.date_time_between(start_date='-1y', end_date='now')
+                    )
+
+                # Create 1-3 Medical History Records
+                for _ in range(random.randint(1, 3)):
+                    MedicalHistory.objects.create(
+                        patient=patient,
+                        condition=fake.word().capitalize(),
+                        diagnosed_date=fake.date_between(start_date='-5y', end_date='today'),
+                        status=random.choice(['Active', 'Controlled', 'Resolved']),
+                        notes=fake.text(max_nb_chars=200)
+                    )
+
+                # Create 1-3 Medications
+                for _ in range(random.randint(1, 3)):
+                    Medication.objects.create(
+                        patient=patient,
+                        name=fake.word().capitalize(),
+                        dosage=f"{random.randint(5, 500)}mg",
+                        frequency=random.choice(['Once daily', 'Twice daily', 'As needed']),
+                        prescribed_by=random.choice(doctors) if doctors else None,
+                        start_date=fake.date_between(start_date='-1y', end_date='today'),
+                        end_date=fake.date_between(start_date='today', end_date='+1y') if random.choice([True, False]) else None
+                    )
+
+                # Create 1-3 Appointments
+                for _ in range(random.randint(1, 3)):
+                    Appointment.objects.create(
+                        patient=patient,
+                        doctor=random.choice(doctors) if doctors else None,
+                        appointment_date=fake.date_between(start_date='-1y', end_date='+30d'),
+                        appointment_time=fake.time(),
+                        type=random.choice(['Consultation', 'Follow-up', 'Procedure']),
+                        status=random.choice(['Scheduled', 'Completed', 'Canceled']),
+                        notes=fake.text(max_nb_chars=200)
+                    )
 
             # Create 10 Categories
             for j in range(10):
@@ -199,7 +292,6 @@ def seed_data():
 
             # Create 20 Devices
             for j in range(20):
-                # Generate a unique UUID for nfc_uuid
                 nfc_uuid = str(uuid.uuid4())
                 device = Device.objects.create(
                     hospital=hospital,
@@ -207,7 +299,7 @@ def seed_data():
                     make_model=fake.word().capitalize() + " Model",
                     manufacture=fake.company(),
                     serial_number=f"H{hospital.id}-SER{j+1:04d}",
-                    nfc_uuid=nfc_uuid,  # Assign generated UUID
+                    nfc_uuid=nfc_uuid,
                     date_of_installation=fake.date_between(start_date='-5y', end_date='today'),
                     warranty_until=fake.date_between(start_date='today', end_date='+3y'),
                     asset_number=f"H{hospital.id}-AST{j+1:04d}",
@@ -219,7 +311,6 @@ def seed_data():
                 )
                 devices.append(device)
 
-                # Create ServiceLog with fallback to any employee if no engineer
                 engineers = [e for e in employees if e.hospital == hospital and e.role == 'engineer']
                 ServiceLog.objects.create(
                     device=device,
@@ -249,7 +340,6 @@ def seed_data():
                     storage_location=fake.file_path(depth=3)
                 )
 
-                # Create Calibration with fallback to any employee if no engineer
                 Calibration.objects.create(
                     device=device,
                     calibration_date=timezone.now(),

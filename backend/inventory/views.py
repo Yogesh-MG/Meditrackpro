@@ -51,7 +51,7 @@ class InventoryItemListCreateView(generics.ListCreateAPIView):
         
 class InventoryItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InventoryItemSerializer
-    permission_classes = [permissions.IsAuthenticated, IsInventoryManager]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'id'
     
     def get_queryset(self):

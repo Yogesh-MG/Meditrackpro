@@ -14,6 +14,7 @@ dist-ssr
 db.sqlite3
 media
 static
+_.apk
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -24,3 +25,4 @@ static
 *.njsproj
 *.sln
 *.sw?
+.env

@@ -10,6 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { baseUrl } from "@/utils/apiconfig";
 
 const Patients = () => {
@@ -98,7 +106,7 @@ const Patients = () => {
               <span className="text-3xl font-bold">18</span>
               <span className="ml-2 text-sm text-muted-foreground">appointments today</span>
             </div>
-            <div className="grid periodontals-3 gap-2 mt-2">
+            <div className="grid grid-cols-3 gap-2 mt-2">
               <div className="text-sm">
                 <span className="text-green-600 font-medium">12</span> Confirmed
               </div>
@@ -134,128 +142,144 @@ const Patients = () => {
 
               <TabsContent value="all" className="m-0">
                 <div className="rounded-md border">
-                  <div className="grid grid-cols-7 px-4 py-3 bg-muted/50 text-sm font-medium">
-                    <div>Patient</div>
-                    <div>ID</div>
-                    <div>Age</div>
-                    <div>Gender</div>
-                    <div>Phone</div>
-                    <div>Last Visit</div>
-                    <div>Status</div>
-                    </div>
-                    {patients.map((patient) => (
-                      <div
-                        key={patient.patient_id}
-                        className="grid grid-cols-7 px-4 py-3 border-t text-sm items-center hover:bg-muted/30 transition-colors"
-                        onClick={() => navigate(`/patients/${patient.patient_id}`)}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback>{getInitials(`${patient.first_name} ${patient.last_name}`)}</AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium">{`${patient.first_name} ${patient.last_name}`}</span>
-                        </div>
-                        <div>{patient.patient_id}</div>
-                        <div>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</div>
-                        <div>{patient.gender}</div>
-                        <div>{patient.phone_number}</div>
-                        <div>{patient.last_visit || 'N/A'}</div>
-                        <div>{getStatusBadge(patient.status)}</div>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="Active" className="m-0">
-                  <div className="rounded-md border">
-                    <div className="grid grid-cols-7 px-4 py-3 bg-muted/50 text-sm font-medium">
-                      <div>Patient</div>
-                      <div>ID</div>
-                      <div>Age</div>
-                      <div>Gender</div>
-                      <div>Phone</div>
-                      <div>Last Visit</div>
-                      <div>Status</div>
-                    </div>
-                    {patients
-                      .filter((p) => p.status === "Active")
-                      .map((patient) => (
-                        <div
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Patient</TableHead>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Age</TableHead>
+                        <TableHead>Gender</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Last Visit</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {patients.map((patient) => (
+                        <TableRow
                           key={patient.patient_id}
-                          className="grid grid-cols-7 px-4 py-3 border-t text-sm items-center hover:bg-muted/30 transition-colors"
-                          onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient.patient_id}`)}
+                          className="hover:bg-muted/30 transition-colors cursor-pointer"
+                          onClick={() => navigate(`/patients/${patient.patient_id}`)}
                         >
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>{getInitials(`${patient.first_name} ${patient.last_name}`)}</AvatarFallback>
-                            </Avatar>
-                            <span className=" 
- 
-font-medium">{`${patient.first_name} ${patient.last_name}`}</span>
-                          </div>
-                          <div>{patient.patient_id}</div>
-                          <div>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</div>
-                          <div>{patient.gender}</div>
-                          <div>{patient.phone_number}</div>
-                          <div>{patient.last_visit || 'N/A'}</div>
-                          <div>{getStatusBadge(patient.status)}</div>
-                        </div>
-                      ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="Inactive" className="m-0">
-                  <div className="rounded-md border">
-                    <div className="grid grid-cols-7 px-4 py-3 bg-muted/50 text-sm font-medium">
-                      <div>Patient</div>
-                      <div>ID</div>
-                      <div>Age</div>
-                      <div>Gender</div>
-                      <div>Phone</div>
-                      <div>Last Visit</div>
-                      <div>Status</div>
-                    </div>
-                    {patients
-                      .filter((p) => p.status === "Inactive")
-                      .map((patient) => (
-                        <div
-                          key={patient.patient_id}
-                          className="grid grid-cols-7 px-4 py-3 border-t text-sm items-center hover:bg-muted/30 transition-colors"
-                          onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient.patient_id}`)}
-                        >
-                          <div className="flex items-center gap-2">
+                          <TableCell className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
                               <AvatarFallback>{getInitials(`${patient.first_name} ${patient.last_name}`)}</AvatarFallback>
                             </Avatar>
                             <span className="font-medium">{`${patient.first_name} ${patient.last_name}`}</span>
-                          </div>
-                          <div>{patient.patient_id}</div>
-                          <div>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</div>
-                          <div>{patient.gender}</div>
-                          <div>{patient.phone_number}</div>
-                          <div>{patient.last_visit || 'N/A'}</div>
-                          <div>{getStatusBadge(patient.status)}</div>
-                        </div>
+                          </TableCell>
+                          <TableCell>{patient.patient_id}</TableCell>
+                          <TableCell>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</TableCell>
+                          <TableCell>{patient.gender}</TableCell>
+                          <TableCell>{patient.phone_number}</TableCell>
+                          <TableCell>{patient.last_visit || 'N/A'}</TableCell>
+                          <TableCell>{getStatusBadge(patient.status)}</TableCell>
+                        </TableRow>
                       ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              <div className="flex justify-between items-center mt-4 text-sm text-muted-foreground">
-                <div>Showing {patients.length} of {totalPages * 10} patients</div>
-                <div className="flex gap-1">
-                  <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(page - 1)}>
-                    Previous
-                  </Button>
-                  <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-                    Next
-                  </Button>
+                    </TableBody>
+                  </Table>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="Active" className="m-0">
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Patient</TableHead>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Age</TableHead>
+                        <TableHead>Gender</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Last Visit</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {patients
+                        .filter((p) => p.status === "Active")
+                        .map((patient) => (
+                          <TableRow
+                            key={patient.patient_id}
+                            className="hover:bg-muted/30 transition-colors cursor-pointer"
+                            onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient.patient_id}`)}
+                          >
+                            <TableCell className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarFallback>{getInitials(`${patient.first_name} ${patient.last_name}`)}</AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">{`${patient.first_name} ${patient.last_name}`}</span>
+                            </TableCell>
+                            <TableCell>{patient.patient_id}</TableCell>
+                            <TableCell>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</TableCell>
+                            <TableCell>{patient.gender}</TableCell>
+                            <TableCell>{patient.phone_number}</TableCell>
+                            <TableCell>{patient.last_visit || 'N/A'}</TableCell>
+                            <TableCell>{getStatusBadge(patient.status)}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="Inactive" className="m-0">
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Patient</TableHead>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Age</TableHead>
+                        <TableHead>Gender</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Last Visit</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {patients
+                        .filter((p) => p.status === "Inactive")
+                        .map((patient) => (
+                          <TableRow
+                            key={patient.patient_id}
+                            className="hover:bg-muted/30 transition-colors cursor-pointer"
+                            onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient.patient_id}`)}
+                          >
+                            <TableCell className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarFallback>{getInitials(`${patient.first_name} ${patient.last_name}`)}</AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">{`${patient.first_name} ${patient.last_name}`}</span>
+                            </TableCell>
+                            <TableCell>{patient.patient_id}</TableCell>
+                            <TableCell>{patient.date_of_birth ? Math.floor((new Date().getTime() - new Date(patient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365)) : '-'}</TableCell>
+                            <TableCell>{patient.gender}</TableCell>
+                            <TableCell>{patient.phone_number}</TableCell>
+                            <TableCell>{patient.last_visit || 'N/A'}</TableCell>
+                            <TableCell>{getStatusBadge(patient.status)}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            <div className="flex justify-between items-center mt-4 text-sm text-muted-foreground">
+              <div>Showing {patients.length} of {totalPages * 10} patients</div>
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(page - 1)}>
+                  Previous
+                </Button>
+                <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
+                  Next
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </PageContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </PageContainer>
   );
 };
 

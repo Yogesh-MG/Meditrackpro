@@ -273,10 +273,6 @@ const HospitalDashboard = () => {
             <p className="text-muted-foreground">Manage hospital staff and access to MediTrack Pro</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={redirectToMediTrackPro}>
-              <Hospital className="h-4 w-4 mr-2" />
-              Access MediTrack Pro
-            </Button>
             <Button onClick={() => setAddEmployeeOpen(true)}>
               <UserPlus className="h-4 w-4 mr-2" />
               Add Employee

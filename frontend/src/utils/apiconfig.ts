@@ -18,7 +18,7 @@ const getBaseUrl = (): string => {
 
   // Local dev fallback with instanceKey
   return instanceKey === "shared" 
-    ? "http://localhost:8000"  
+    ? "https://twistar.pythonanywhere.com/"  
     : `http://${instanceKey}:8000`;
 };
 

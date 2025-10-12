@@ -202,7 +202,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
             label="Suppliers"
             href="/suppliers"
             active={location.pathname === "/suppliers"}
-          />
+          /> 
           <SidebarItem
             icon={<TicketCheck size={20} />}
             label="Ticketing"
@@ -219,12 +219,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
             label="Compliance"
             href="/compliance"
             active={location.pathname === "/compliance"}
-          />
-          <SidebarItem
-            icon={<CreditCard size={20} />}
-            label="Billing"
-            href="/billing"
-            active={location.pathname === "/billing"}
           />
           <SidebarItem
             icon={<Users size={20} />}

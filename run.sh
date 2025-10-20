@@ -6,13 +6,15 @@ echo "Select an option:/n 1. web/n 2. mobile/n 3. Docker application"
 read option
 if [ "$option" = "1" ]; then
   echo "Starting web application..."
+  chmod +x web.sh
   ./web.sh
 elif [ "$option" = "2" ]; then
   echo "Starting mobile application..."
+  chmod +x app.sh
   ./app.sh
 elif [ "$option" = "3" ]; then
   echo "Starting Docker application..."
-  docker build -t Dockerfile.Mtorch
+  docker build -t mtorch:latest Dockerfile.Mtorch
   docker-compose build
   docker-compose up
   docker-compose exec backend python manage.py migrate

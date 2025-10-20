@@ -1,5 +1,3 @@
-// src/config/apiConfig.ts
-
 // Default to local dev if no env variable is set
 const getBaseUrl = (): string => {
   // For Vite: use import.meta.env
@@ -18,8 +16,8 @@ const getBaseUrl = (): string => {
 
   // Local dev fallback with instanceKey
   return instanceKey === "shared" 
-    ? "https://twistar.pythonanywhere.com/"  
-    : `http://${instanceKey}:8000`;
+    ? "http://192.168.1.120/" 
+    : `https://${instanceKey}.twistar.pythonanywhere.com/`;
 };
 
 export const baseUrl = getBaseUrl();

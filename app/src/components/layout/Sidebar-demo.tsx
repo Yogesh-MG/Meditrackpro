@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,43 +11,20 @@ import {
   Package,
   Stethoscope,
   Truck,
-  TicketCheck,
   FileCheck,
   CreditCard,
   Users,
-  Brain,
   BarChart3,
   Settings,
   HelpCircle,
   ChevronLeft,
   ChevronRight,
-  Hospital,
+  TicketCheck,
 } from "lucide-react";
-import axios from "axios";
-import { baseUrl } from "@/utils/apiconfig";
-
-interface UserData {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  full_name: string;
-  role: string | null;
-  type: "admin" | "employee" | "user" | null;
-  hospital_name?: string | null;
-  hospital?: number | null;
-  subscription?: {
-    plan: string;
-    end_date: string;
-    payment_status: string;
-  } | null;
-  gstin?: string | null;
-}
 
 interface SidebarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  userData: UserData | null;
 }
 
 interface SidebarItemProps {
@@ -64,7 +42,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   active,
   disabled,
 }) => {
-  const navigate = useNavigate(); // Already correct here
+  const navigate = useNavigate();
 
   const handleClick = () => {
     if (!disabled) {
@@ -94,51 +72,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   );
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
+const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const navigate = useNavigate(); // Add this here to fix the error
-  const [remainingDays, setRemainingDays] = useState<number | null>(null);
-  const [profileData, setProfileData] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${baseUrl}/api/me/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProfileData(response.data);
-        const subscription = response.data.subscription;
-        if (subscription && subscription.end_date) {
-          const endDate = new Date(subscription.end_date);
-          const currentDate = new Date();
-          const timeDiff = endDate.getTime() - currentDate.getTime();
-          const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-          setRemainingDays(daysLeft > 0 ? daysLeft : 0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-        setRemainingDays(23);
-      }
-    };
-
-    if (userData) {
-      fetchUserProfile();
-    }
-  }, [userData]);
-
-  const handleUpgradeClick = () => {
-    if (profileData) {
-      setTimeout(() => {
-        navigate(
-          `/payment?hospital_id=${encodeURIComponent(profileData.hospital || "")}&hospital_name=${encodeURIComponent(profileData.hospital_name || "")}&admin_email=${encodeURIComponent(profileData.email || "")}&gstin=${encodeURIComponent(profileData.gstin || "")}`
-        );
-      }, 1500);
-    } else {
-      console.error("Profile data not available for redirect");
-    }
-  };
 
   return (
     <aside
@@ -174,40 +110,32 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
           <SidebarItem
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
-            href="/dashboard"
-            active={location.pathname === "/dashboard"}
+            href="/demo/dashboard"
+            active={location.pathname === "/demo/dashboard"}
           />
-          {userData?.type === "admin" && ( // Admin-only link
-            <SidebarItem
-              icon={<Hospital size={20} />}
-              label="Admin Dashboard"
-              href="/hospital-dashboard"
-              active={location.pathname === "//hospital-dashboard"}
-            />
-          )}
           <SidebarItem
             icon={<Package size={20} />}
             label="Inventory"
-            href="/inventory"
-            active={location.pathname === "/inventory"}
+            href="/demo/inventory"
+            active={location.pathname === "/demo/inventory"}
           />
           <SidebarItem
             icon={<Stethoscope size={20} />}
             label="Devices"
-            href="/devices"
-            active={location.pathname === "/devices"}
+            href="/demo/devices"
+            active={location.pathname === "/demo/devices"}
           />
           <SidebarItem
             icon={<Truck size={20} />}
             label="Suppliers"
-            href="/suppliers"
-            active={location.pathname === "/suppliers"}
+            href="/demo/suppliers"
+            active={location.pathname === "/demo/suppliers"}
           />
           <SidebarItem
             icon={<TicketCheck size={20} />}
             label="Ticketing"
-            href="/ticket"
-            active={location.pathname === "/ticket"}
+            href="/demo/ticket"
+            active={location.pathname === "/demo/ticket"}
           />
         </div>
 
@@ -217,32 +145,26 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
           <SidebarItem
             icon={<FileCheck size={20} />}
             label="Compliance"
-            href="/compliance"
-            active={location.pathname === "/compliance"}
+            href="/demo/compliance"
+            active={location.pathname === "/demo/compliance"}
           />
           <SidebarItem
             icon={<CreditCard size={20} />}
             label="Billing"
-            href="/billing"
-            active={location.pathname === "/billing"}
+            href="/demo/billing"
+            active={location.pathname === "/demo/billing"}
           />
           <SidebarItem
             icon={<Users size={20} />}
             label="Patients"
-            href="/patients"
-            active={location.pathname === "/patients"}
-          />
-          <SidebarItem
-            icon={<Brain size={20} />}
-            label="AI Test Lab"
-            href="/ai-test-lab"
-            active={location.pathname === "/ai-test-lab"}
+            href="/demo/patients"
+            active={location.pathname === "/demo/patients"}
           />
           <SidebarItem
             icon={<BarChart3 size={20} />}
             label="Analytics"
-            href="/analytics"
-            active={location.pathname === "/analytics"}
+            href="/demo/analytics"
+            active={location.pathname === "/demo/analytics"}
           />
         </div>
 
@@ -252,42 +174,35 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onOpenChange, userData }) => {
           <SidebarItem
             icon={<Settings size={20} />}
             label="Settings"
-            href="/settings"
-            active={location.pathname === "/settings"}
+            href="/demo/settings"
+            active={location.pathname === "/demo/settings"}
           />
           <SidebarItem
             icon={<HelpCircle size={20} />}
             label="Help & Support"
-            href="/support"
-            active={location.pathname === "/support"}
+            href="/demo/support"
+            active={location.pathname === "/demo/support"}
           />
         </div>
       </ScrollArea>
 
       <div className="mt-auto p-4">
-        <div
-          className={cn(
-            "rounded-lg bg-medical-50 dark:bg-slate-800 p-4 transition-all",
-            !open && "md:hidden"
-          )}
-        >
+        <div className={cn(
+          "rounded-lg bg-medical-50 dark:bg-slate-800 p-4 transition-all",
+          !open && "md:hidden"
+        )}>
           <p className="text-sm font-medium text-medical-900 dark:text-medical-100">
-            {userData?.subscription?.plan
-              ? `${userData.subscription.plan.charAt(0).toUpperCase() + userData.subscription.plan.slice(1)} Active`
-              : "Pro Trial Active"}
+            Pro Trial Active
           </p>
           <p className="text-xs text-medical-700 dark:text-medical-200 mt-1">
-            {remainingDays !== null ? `${remainingDays} days remaining` : "Loading..."}
+            23 days remaining
           </p>
-          {remainingDays !== null && remainingDays <= 5 && (
-          <Button
-            className="w-full mt-3 bg-medical-500 hover:bg-medical-600 text-white"
+          <Button 
+            className="w-full mt-3 bg-medical-500 hover:bg-medical-600 text-white" 
             size="sm"
-            onClick={handleUpgradeClick}
           >
             Upgrade
           </Button>
-          )}
         </div>
       </div>
     </aside>

@@ -13,7 +13,7 @@ elif [ "$option" = "3" ]; then
   echo "Starting Docker application..."
   docker build -t mtorch:latest -f Dockerfile.Mtorch .
   docker-compose build
-  docker-compose up
+  docker-compose up -t
   docker-compose exec backend python manage.py migrate
   docker-compose exec backend python manage.py createsuperuser
 else

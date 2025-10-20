@@ -204,16 +204,9 @@ const PatientDetail = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
-              <FileText className="w-4 h-4 mr-2" />
-              Medical Records
-            </Button>
             <Button onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient_id}/appointments/new`)}>
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Appointment
-            </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              Delete Patient
             </Button>
           </div>
         </div>

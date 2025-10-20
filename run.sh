@@ -11,7 +11,7 @@ elif [ "$option" = "2" ]; then
   ./app.sh
 elif [ "$option" = "3" ]; then
   echo "Starting Docker application..."
-  docker build -t mtorch:latest -f Dockerfile.Mtorch .
+  #docker build -t mtorch:latest -f Dockerfile.Mtorch .
   docker-compose build
   docker-compose up -d
   docker-compose exec backend python manage.py migrate

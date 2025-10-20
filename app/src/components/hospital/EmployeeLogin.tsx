@@ -88,7 +88,7 @@ const EmployeeLogin: React.FC = () => {
       const axiosError = error as AxiosError<{ detail?: string }>;
       toast({
         title: "Login Failed",
-        description: axiosError.response?.data?.detail || "Invalid credentials",
+        description: axiosError.response?.data?.detail || `Invalid credentials ${baseUrl}`,
         variant: "destructive",
       });
     } finally {

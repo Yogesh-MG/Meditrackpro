@@ -6,8 +6,8 @@ get_pi_ip() {
 }
 PI_IP=$(get_pi_ip)
 update_frontend_ip() {
-  APP_API_CONFIG_PATH="./app/src/utils/apiconfig.ts"
-  FRONTEND_API_CONFIG_PATH="./app/src/utils/apiconfig.ts"
+  APP_API_CONFIG_PATH="app/src/utils/apiconfig.ts"
+  FRONTEND_API_CONFIG_PATH="frontend/src/utils/apiconfig.ts"
   if [ -f "$APP_API_CONFIG_PATH"  ]; then
     echo "Updating API URL in $APP_API_CONFIG_PATH"
     sed -i "s|? \"https://twistar.pythonanywhere.com/\"|? \"http://$PI_IP:8000/\"|" "$CONFIG_FILE"

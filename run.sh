@@ -1,8 +1,11 @@
 
 echo "Running medical2 application..."
 
+get_pi_ip() {
+  hostname -I | awk '{print $1}'
+}
 
-echo "Select an option:/n 1. web/n 2. mobile/n 3. Docker application"
+echo "Select an option:/n 1. web/n 2. mobile apk/n 3. Deploy application"
 read option
 if [ "$option" = "1" ]; then
   echo "Starting web application..."

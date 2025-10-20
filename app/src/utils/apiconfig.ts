@@ -1,5 +1,3 @@
-// src/config/apiConfig.ts
-
 // Default to local dev if no env variable is set
 const getBaseUrl = (): string => {
   // For Vite: use import.meta.env

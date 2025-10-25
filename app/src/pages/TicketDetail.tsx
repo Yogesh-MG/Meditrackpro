@@ -322,7 +322,7 @@ const TicketDetail = () => {
   };
 
   if (loading) {
-    return <PageContainer><div className="container mx-auto py-6">Loading ticket...</div></PageContainer>;
+    return <PageContainer><div className="container mx-auto py-4 sm:py-6 px-4">Loading ticket...</div></PageContainer>;
   }
 
   if (!hospitalId || !token) {
@@ -334,14 +334,14 @@ const TicketDetail = () => {
   if (error || !ticket) {
     return (
       <PageContainer>
-        <div className="container mx-auto py-6">
+        <div className="container mx-auto py-4 sm:py-6 px-4">
           <div className="flex items-center mb-6">
             <Button variant="outline" size="sm" className="mr-4" onClick={() => navigate("/ticket")}>
               <ArrowLeft size={16} />
             </Button>
-            <h1 className="text-2xl font-bold tracking-tight">Ticket Not Found</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Ticket Not Found</h1>
           </div>
-          <p>{error || "The requested ticket could not be found."}</p>
+          <p className="text-sm sm:text-base">{error || "The requested ticket could not be found."}</p>
         </div>
       </PageContainer>
     );
@@ -349,18 +349,17 @@ const TicketDetail = () => {
 
   return (
     <PageContainer>
-      <div className="container mx-auto py-6 max-w-6xl animate-fade-in">
-        <div className="flex items-center mb-6">
-          <Button variant="outline" size="sm" className="mr-4" onClick={() => navigate("/ticket")}>
+      <div className="container mx-auto py-4 sm:py-6 px-4 max-w-full sm:max-w-6xl animate-fade-in">
+        <div className="flex items-center mb-4 sm:mb-6">
+          <Button variant="outline" size="sm" className="mr-2 sm:mr-4" onClick={() => navigate("/ticket")}>
             <ArrowLeft size={16} className="mr-2" />
-            Back to Tickets
           </Button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold tracking-tight">{ticket.title}</h1>
-              <span className="text-muted-foreground">#{ticket.ticket_id}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight truncate">{ticket.title}</h1>
+              <span className="text-muted-foreground text-xs sm:text-sm">#{ticket.ticket_id}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground flex-wrap">
               <span>Created {formatDistanceToNow(new Date(ticket.created_at), { addSuffix: true })}</span>
               <span>•</span>
               <span>Updated {formatDistanceToNow(new Date(ticket.updated_at), { addSuffix: true })}</span>
@@ -368,37 +367,37 @@ const TicketDetail = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Ticket Details</CardTitle>
-                <CardDescription>All information about this support request</CardDescription>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Ticket Details</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">All information about this support request</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="border rounded-md p-4 bg-muted/20">
+              <CardContent className="space-y-4 p-3 sm:p-4">
+                <div className="border rounded-md p-3 sm:p-4 bg-muted/20">
                   <div className="flex items-start gap-3 mb-3">
-                    <Avatar>
-                      <AvatarFallback>
+                    <Avatar className="h-8 w-8 flex-shrink-0">
+                      <AvatarFallback className="text-xs">
                         {getInitials(ticket.created_by?.name)}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <div className="font-medium">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium truncate">
                         {ticket.created_by
                           ? `${ticket.created_by.name}`
                           : "Unknown User"}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
                         {format(new Date(ticket.created_at), "PPP 'at' p")}
                       </div>
                     </div>
                   </div>
-                  <p className="text-base mb-4">{ticket.description}</p>
-                  <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mt-4">
+                  <p className="text-sm sm:text-base mb-4 leading-relaxed">{ticket.description}</p>
+                  <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-muted-foreground mt-4">
                     <div className="flex items-center gap-1">
                       <MapPin size={14} />
-                      <span>{ticket.location}</span>
+                      <span className="truncate">{ticket.location}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar size={14} />
@@ -408,22 +407,22 @@ const TicketDetail = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Comments and Updates</h3>
+                  <h3 className="text-base sm:text-lg font-medium">Comments and Updates</h3>
 
                   {ticket.comments.length === 0 ? (
-                    <p className="text-muted-foreground">No comments yet.</p>
+                    <p className="text-muted-foreground text-sm">No comments yet.</p>
                   ) : (
                     ticket.comments.map((comment) => (
-                      <div key={comment.id} className="border rounded-md p-4 bg-white">
+                      <div key={comment.id} className="border rounded-md p-3 sm:p-4 bg-white">
                         <div className="flex items-start gap-3 mb-2">
-                          <Avatar className="h-8 w-8">
+                          <Avatar className="h-8 w-8 flex-shrink-0">
                             <AvatarFallback className="text-xs">
                               {getInitials(comment.author?.name)}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="space-y-1">
+                          <div className="min-w-0 flex-1 space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">
+                              <span className="font-medium truncate">
                                 {comment.author
                                   ? `${comment.author.name}`
                                   : "Unknown User"}
@@ -437,10 +436,10 @@ const TicketDetail = () => {
                             </div>
                           </div>
                         </div>
-                        <p className="ml-11 text-sm">{comment.content}</p>
+                        <p className="ml-11 text-sm leading-relaxed">{comment.content}</p>
                         {comment.file && (
                           <div className="ml-11 mt-2">
-                            <a href={comment.file} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+                            <a href={comment.file} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs sm:text-sm">
                               View Attachment
                             </a>
                           </div>
@@ -449,9 +448,9 @@ const TicketDetail = () => {
                     ))
                   )}
 
-                  <div className="border rounded-md p-4 bg-white">
+                  <div className="border rounded-md p-3 sm:p-4 bg-white">
                     <div className="flex items-start gap-3 mb-3">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-8 w-8 flex-shrink-0">
                         <AvatarFallback className="text-xs">
                           {getInitials(
                             profileData
@@ -460,23 +459,23 @@ const TicketDetail = () => {
                           )}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="w-full">
+                      <div className="w-full min-w-0">
                         <Textarea
                           placeholder="Add a comment or update..."
-                          className="min-h-[100px] mb-3"
+                          className="min-h-[80px] sm:min-h-[100px] mb-3 text-sm"
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         />
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
+                        <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-2 sm:gap-0">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <Button
                               variant="outline"
                               size="sm"
-                              className="flex gap-1"
+                              className="flex gap-1 min-w-[80px] justify-center"
                               onClick={() => fileInputRef.current?.click()} // Trigger file input
                             >
                               <Paperclip size={14} />
-                              Attach
+                              <span className="hidden sm:inline">Attach</span>
                             </Button>
                             <input
                               type="file"
@@ -487,20 +486,21 @@ const TicketDetail = () => {
                               onChange={(e) => setfile(e.target.files?.[0] || null)}
                             />
                             {file && (
-                              <span className="text-sm text-muted-foreground">
+                              <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[150px] sm:max-w-none">
                                 {file.name}
                               </span>
                             )}
                           </div>
                           <Button
                             size="sm"
-                            className="flex gap-1"
+                            className="flex gap-1 w-full sm:w-auto justify-center min-w-[100px]"
                             onClick={handleCommentSubmit}
                             disabled={isSubmitting}
                           >
                             <Send size={14} 
                             className={isSubmitting ? "animate-spin": ""}/>
-                            {isSubmitting ? "Sending..." : "Send"} 
+                            <span className="hidden sm:inline">{isSubmitting ? "Sending..." : "Send"}</span>
+                            <span className="sm:hidden">{isSubmitting ? "..." : "Send"}</span>
                           </Button>
                         </div>
                       </div>
@@ -511,16 +511,16 @@ const TicketDetail = () => {
             </Card>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Status and Assignment</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Status and Assignment</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 p-3 sm:p-4">
                 <div>
-                  <label className="text-sm font-medium block mb-2">Status</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-2">Status</label>
                   <Select value={status} onValueChange={handleStatusChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-sm">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -533,9 +533,9 @@ const TicketDetail = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium block mb-2">Assigned Engineer</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-2">Assigned Engineer</label>
                   <Select value={assignedTo} onValueChange={handleAssigneeChange}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-sm">
                       <SelectValue placeholder="Assign to engineer" />
                     </SelectTrigger>
                     <SelectContent>
@@ -549,92 +549,98 @@ const TicketDetail = () => {
                   </Select>
                 </div>
 
-                <div className="border-t pt-4">
-                  <label className="text-sm font-medium block mb-2">Current Status</label>
-                  <div className="flex items-center gap-2">
+                <div className="border-t pt-3 sm:pt-4">
+                  <label className="text-xs sm:text-sm font-medium block mb-2">Current Status</label>
+                  <div className="flex items-center gap-2 flex-wrap">
                     {renderStatusBadge(ticket.status)}
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                       Updated {formatDistanceToNow(new Date(ticket.updated_at), { addSuffix: true })}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium block mb-2">Priority</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-2">Priority</label>
                   <div className="flex items-center gap-2">
                     {renderPriorityBadge(ticket.priority)}
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="border-t flex-col items-start pt-4">
+              <CardFooter className="border-t flex-col items-stretch p-3 sm:p-4 pt-3 sm:pt-4 gap-2">
                 <Button
                   variant="outline"
-                  className="w-full mb-2"
+                  className="w-full justify-center"
+                  size="sm"
                   onClick={() => handleStatusChange("resolved")}
                 >
                   <CheckCircle2 size={16} className="mr-2" />
-                  Mark as Resolved
+                  <span className="hidden sm:inline">Mark as Resolved</span>
+                  <span className="sm:hidden">Resolve</span>
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full justify-center"
+                  size="sm"
                   onClick={() => navigate(`/tickets/edit/${ticket.ticket_id}`)}
                 >
                   <Edit2 size={16} className="mr-2" />
-                  Edit Ticket
+                  <span className="hidden sm:inline">Edit Ticket</span>
+                  <span className="sm:hidden">Edit</span>
                 </Button>
               </CardFooter>
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Device Information</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Device Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4">
                 {ticket.device ? (
                   <>
                     <div>
-                      <label className="text-sm font-medium block mb-1">Device ID</label>
-                      <p>{ticket.device.device_id}</p>
+                      <label className="text-xs sm:text-sm font-medium block mb-1">Device ID</label>
+                      <p className="text-sm truncate">{ticket.device.device_id}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium block mb-1">Device Type</label>
-                      <p>{ticket.device.device_type || "Unknown"}</p>
+                      <label className="text-xs sm:text-sm font-medium block mb-1">Device Type</label>
+                      <p className="text-sm">{ticket.device.device_type || "Unknown"}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium block mb-1">Model</label>
-                      <p>{ticket.device.model || "Unknown"}</p>
+                      <label className="text-xs sm:text-sm font-medium block mb-1">Model</label>
+                      <p className="text-sm">{ticket.device.model || "Unknown"}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium block mb-1">Manufacturer</label>
-                      <p>{ticket.device.manufacturer || "Unknown"}</p>
+                      <label className="text-xs sm:text-sm font-medium block mb-1">Manufacturer</label>
+                      <p className="text-sm">{ticket.device.manufacturer || "Unknown"}</p>
                     </div>
-                    <div className="pt-3">
+                    <div className="pt-2 sm:pt-3">
                       <Button
                         variant="outline"
-                        className="w-full"
+                        className="w-full justify-center"
+                        size="sm"
                         onClick={() => navigate(`/devices/${ticket.device.device_id}`)}
                       >
-                        View Device Details
+                        <span className="hidden sm:inline">View Device Details</span>
+                        <span className="sm:hidden">View Details</span>
                       </Button>
                     </div>
                   </>
                 ) : (
-                  <p className="text-muted-foreground">No device information available for this ticket.</p>
+                  <p className="text-muted-foreground text-sm">No device information available for this ticket.</p>
                 )}
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Related Information</CardTitle>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Related Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4">
                 <div>
-                  <label className="text-sm font-medium block mb-1">Reported By</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-1">Reported By</label>
                   <div className="flex items-center gap-2">
                     <UserCircle2 size={16} />
-                    <span>
+                    <span className="text-sm truncate">
                       {ticket.created_by
                         ? `${ticket.created_by.name}`
                         : "Unknown User"}
@@ -642,17 +648,17 @@ const TicketDetail = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium block mb-1">Location</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-1">Location</label>
                   <div className="flex items-center gap-2">
                     <MapPin size={16} />
-                    <span>{ticket.location}</span>
+                    <span className="text-sm truncate">{ticket.location}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium block mb-1">Category</label>
+                  <label className="text-xs sm:text-sm font-medium block mb-1">Category</label>
                   <div className="flex items-center gap-2">
                     <ListTodo size={16} />
-                    <span className="capitalize">
+                    <span className="text-sm capitalize">
                       {ticket.category.replace("_", " ")}
                     </span>
                   </div>

@@ -25,7 +25,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
       "overflow-hidden transition-all duration-300 h-full card-hover", 
       className
     )}>
-      <CardHeader className="p-4 md:p-6">
+      <CardHeader className="p-4 md:p-7">
         <CardTitle className="text-lg font-medium">{title}</CardTitle>
         {description && (
           <CardDescription>{description}</CardDescription>

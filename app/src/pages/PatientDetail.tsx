@@ -187,10 +187,6 @@ const PatientDetail = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate(`/hospitals/${hospital_id}/patients`)}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Patients
-            </Button>
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarFallback className="text-lg font-semibold">
@@ -198,15 +194,15 @@ const PatientDetail = () => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold">{`${patient.first_name} ${patient.last_name}`}</h1>
-                <p className="text-muted-foreground">Patient ID: {patient.patient_id}</p>
+               <h1 className="text-lg font-semibold">{`${patient.first_name} ${patient.last_name}`}</h1>
+                <p className="text-sm text-muted-foreground">Patient ID: {patient.patient_id}</p>
               </div>
             </div>
           </div>
           <div className="flex gap-2">
             <Button onClick={() => navigate(`/hospitals/${hospital_id}/patients/${patient_id}/appointments/new`)}>
               <Calendar className="w-4 h-4 mr-2" />
-              Schedule Appointment
+              Schedule
             </Button>
           </div>
         </div>
@@ -261,13 +257,14 @@ const PatientDetail = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="medical">Medical History</TabsTrigger>
-            <TabsTrigger value="medications">Medications</TabsTrigger>
-            <TabsTrigger value="nervous-system">Nervous System</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
-          </TabsList>
+         <TabsList className="flex w-full overflow-x-auto no-scrollbar space-x-2">
+          <TabsTrigger value="overview" className="flex-shrink-0">Overview</TabsTrigger>
+          <TabsTrigger value="medical" className="flex-shrink-0">Medical History</TabsTrigger>
+          <TabsTrigger value="medications" className="flex-shrink-0">Medications</TabsTrigger>
+          <TabsTrigger value="nervous-system" className="flex-shrink-0">Nervous System</TabsTrigger>
+          <TabsTrigger value="appointments" className="flex-shrink-0">Appointments</TabsTrigger>
+        </TabsList>
+
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -524,8 +521,12 @@ const PatientDetail = () => {
                 </div>
               </CardContent>
             </Card>
+            
           </TabsContent>
         </Tabs>
+        <Button variant="outline" size="sm" onClick={() => navigate(`/patients`)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+        </Button>
       </div>
     </PageContainer>
   );

@@ -22,6 +22,11 @@ class Unit(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='inventory_units')
     name = models.CharField(max_length=50, unique=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['hospital', 'name'], name="unique_unit_name_per_hospital")
+        ]
+        
     def __str__(self):
         return self.name
     

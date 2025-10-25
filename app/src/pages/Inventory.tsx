@@ -283,7 +283,6 @@ const Inventory = () => {
                 <TooltipTrigger asChild>
                   <Button variant="outline" onClick={() => exportMutation.mutate()}>
                     <Download className="h-4 w-4 mr-2" />
-                    Export
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Export inventory as CSV</TooltipContent>
@@ -363,9 +362,9 @@ const Inventory = () => {
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="icon">
+                   {/* <Button variant="outline" size="icon">
                       <Filter className="h-4 w-4" />
-                    </Button>
+                    </Button>*/}
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>

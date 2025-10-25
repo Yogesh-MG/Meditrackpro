@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'compliance.apps.ComplianceConfig',
     'patient.apps.PatientConfig',
     'ml_test.apps.MlTestConfig',
+    'dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [

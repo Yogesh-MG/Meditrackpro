@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FilterX, Plus, Search, UserPlus, Users } from "lucide-react";
+import { Filter, Plus, Search, UserPlus, Users } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PageContainer from "@/components/layout/PageContainer";
@@ -76,8 +76,7 @@ const Patients = () => {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" className="flex gap-2">
-              <FilterX size={16} />
-              Filter
+              <Filter size={16} />
             </Button>
             <Button className="flex gap-2" onClick={() => navigate(`/patients/add`)}>
               <UserPlus size={16} />

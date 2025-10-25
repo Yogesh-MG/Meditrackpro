@@ -204,7 +204,6 @@ const Suppliers = () => {
         <div className="flex gap-3">
           <Button variant="outline" disabled>
             <Download className="h-4 w-4 mr-2" />
-            Export
           </Button>
           <Button onClick={() => navigate('/suppliers/add')}>
             <Plus className="h-4 w-4 mr-2" />

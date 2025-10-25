@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/', include('compliance.urls')),
     path('api/', include('patient.urls')),
     path('api/', include('ml_test.urls')),
+    path('api/', include('dashboard.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 

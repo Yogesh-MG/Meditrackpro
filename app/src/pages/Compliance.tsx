@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarCheck, FileText, ShieldCheck } from 'lucide-react';
+import { CalendarCheck, FileText, ShieldCheck, DownloadIcon, UploadIcon } from 'lucide-react';
 import PageContainer from '@/components/layout/PageContainer';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import { Button } from '@/components/ui/button';
@@ -352,14 +352,12 @@ const Compliance = () => {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" className="flex gap-2" onClick={() => exportReportMutation.mutate()}>
-              <FileText size={16} />
-              Export Report
+              <DownloadIcon size={16} />
             </Button>
             <Dialog open={showDocumentDialog} onOpenChange={setShowDocumentDialog}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="flex gap-2">
-                  <FileText size={16} />
-                  Upload Document
+                  <UploadIcon size={16} />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -423,7 +421,6 @@ const Compliance = () => {
               <DialogTrigger asChild>
                 <Button className="flex gap-2">
                   <ShieldCheck size={16} />
-                  Schedule Audit
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">

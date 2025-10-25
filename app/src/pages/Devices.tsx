@@ -231,7 +231,6 @@ const Devices = () => {
         <div className="flex gap-3">
           <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
-            Export
           </Button>
           <a href="/devices/order">
             <Button>
@@ -316,12 +315,12 @@ const Devices = () => {
                     onChange={handleSearch}
                   />
                 </div>
-                <Button variant="outline" size="icon">
+                {/*<Button variant="outline" size="icon">
                   <Filter className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon">
                   <SlidersHorizontal className="h-4 w-4" />
-                </Button>
+                </Button>*/}
               </div>
             </div>
 

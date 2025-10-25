@@ -20,6 +20,8 @@ Faker==37.4.0
 filelock==3.13.1
 Flask==3.1.0
 fsspec==2024.6.1
+google-auth==2.39.0
+google-genai==1.46.0
 graphene==3.4.3
 graphene-django==3.2.3
 graphql-core==3.2.6

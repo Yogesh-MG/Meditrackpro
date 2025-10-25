@@ -15,9 +15,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      args:  # Add build args
-        - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
-        - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
     env_file:
       - .env
     environment:
@@ -30,8 +27,6 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
-      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
-      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
     depends_on:
       - db
     volumes:
@@ -47,12 +42,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       - backend
     volumes:
       - ./backend/static:/usr/share/nginx/html/static
-      - ~/meditrack_certs:/etc/nginx/certs:ro # Mount SSL certificates it's for pi only for local use remove it for deployment
     networks:
       - app-network
     restart: unless-stopped

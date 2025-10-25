@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-
+GEMINI_API_KEY = config('GEMINI_API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  #config('DEBUG', default=True, cast=bool)
 
@@ -146,8 +146,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-RAZORPAY_KEY_ID = 'rzp_test_OFvLhrmgdqUuVb'
-RAZORPAY_KEY_SECRET = 'R0pZ3lIG7kINzkR7nzGhZZDI' 
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
 
 
 

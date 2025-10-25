@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Upload, Brain, Stethoscope, Eye, AlertCircle, CheckCircle, Loader } from "lucide-react";
+import { Upload, Brain, Stethoscope, CloudUploadIcon,Eye, AlertCircle, CheckCircle, Loader } from "lucide-react";
 import PageContainer from "@/components/layout/PageContainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,13 @@ const testTypes = [
     icon: Stethoscope,
     description: "Upload chest X-ray images to detect pneumonia",
     acceptedFormats: "Chest X-rays (.jpg, .png)"
+  },
+  {
+    id: "other",
+    name: "Cloud-based Analysis",
+    icon: CloudUploadIcon,
+    description: "Upload  X-ray images to detect various conditions using cloud AI services",
+    acceptedFormats: "X-rays (.jpg, .png)"
   }
 ];
 
@@ -120,6 +127,25 @@ const AITestLab = () => {
             confidence: Math.round(response.data.confidence * 100 * 100) / 100,
             details: response.data.details || "Analysis completed using brain tumor classification model",
             recommendations: response.data.recommendations || ["Consult with a neurologist", "Consider follow-up MRI"]
+          });
+
+        } else if (selectedTest === "other") {
+          // Send to Django backend for brain tumor detection
+          const formData = new FormData();
+          formData.append("image", uploadedFile);
+
+          const response = await axios.post(`${baseUrl}/api/ml/cloud/`, formData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data"
+            }
+          });
+
+          setResult({
+            prediction: response.data.prediction,
+            confidence: Math.round(response.data.confidence)  ,
+            details: response.data.details || "Analysis completed using cloud classification model",
+            recommendations: response.data.recommendations || ["Not able to diagnoise", "Consider follow-up MRI"]
           });
 
         } else {

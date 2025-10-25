@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
 from .models import Hospital, Subscription
-from .serilaizers import HospitalSerializer, UserSerializer
+from .serializers import HospitalSerializer, UserSerializer
 from employees.models import Employee
 import razorpay
 

@@ -9,10 +9,11 @@ from hospitals.models import Hospital
 from hospitals.permissions import IsTechnician
 # Create your views here.
 class EmployeeListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ]
     
     def get(self, request, hospital_id):
-        if not IsTechnician:
+        permission = IsTechnician()
+        if not permission.has_permission(request, self): # <-- Correct way to call it
             print('1')
             return Response({'message': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
         

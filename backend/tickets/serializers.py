@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from device.serializers import DeviceSerializer
 from device.models import Device
 from employees.models import Employee
-from hospitals.serilaizers import HospitalSerializer  # Fixed typo: serilaizers -> serializers
+from hospitals.serializers import HospitalSerializer
 from employees.serializers import EmployeeSerializer
 from django.utils import timezone
 

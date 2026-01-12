@@ -1,160 +1,122 @@
-🏥 MediTrackPros
+# 🏥 MediTrackPros
 
-Open-Source Hospital Workflow & Asset Management Platform
+**Open-Source Hospital Workflow & Asset Management Platform**
 
-MediTrackPros is a cloud-ready, multi-tenant healthcare management system designed to help hospitals efficiently manage medical devices, inventory, compliance, patients, and operational workflows from a single unified platform.
+MediTrackPros is a **cloud-ready, multi-tenant healthcare management system** designed to help hospitals manage **medical devices, inventory, compliance, patients, and daily operations** from a single unified platform.
 
-This project is built with real hospital workflows in mind and is intended to be used, extended, and customized by hospitals, healthcare startups, and developers.
+This project is built with **real hospital workflows in mind** and is intended for hospitals, healthcare startups, researchers, and open-source contributors.
 
-✨ Why MediTrackPros?
+---
 
-Hospitals often rely on:
+## ✨ Why MediTrackPros?
 
-Disconnected spreadsheets
+Hospitals often rely on disconnected systems such as spreadsheets, paper logs, and siloed applications. This leads to inefficiency, missed maintenance schedules, and compliance risks.
 
-Manual device logs
+MediTrackPros addresses these challenges by providing:
 
-Fragmented inventory systems
+* Centralized hospital operations management
+* Medical device lifecycle tracking
+* Inventory and supplier control
+* Compliance and audit readiness
+* Role-based access control
+* Optional AI-assisted diagnostics
 
-Paper-based compliance tracking
+---
 
-MediTrackPros solves this by providing a centralized, role-based system that improves:
+## 🧩 Core Modules
 
-Operational visibility
+### 🏥 Hospital & Multi-Tenancy
 
-Device safety & compliance
+* Supports multiple hospitals in a single deployment
+* Strict hospital-level data isolation
+* Subscription and plan management
+* Role-based permissions (Admin, Engineer, Doctor, Staff)
 
-Maintenance planning
+### 🧑‍⚕️ Patient Management
 
-Inventory efficiency
+* Patient profiles and demographics
+* Medical history, vitals, medications
+* Appointments and emergency contacts
+* Doctor assignment and visit tracking
 
-🧩 Core Modules Overview
-🏥 Hospital & Multi-Tenant Management
+### 🛠 Medical Device Lifecycle Management
 
-Supports multiple hospitals in a single deployment
+* Complete device registry per hospital
+* QR-code based device identification
+* Installation, warranty, and asset tracking
+* Calibration schedules and alerts
+* Preventive & corrective maintenance logs
+* Incident reporting and service history
 
-Strict data isolation between hospitals
+### 📦 Inventory & Procurement
 
-Subscription & plan management per hospital
+* Categorized inventory system
+* Stock quantity and reorder level tracking
+* Supplier management
+* Purchase orders and receipts
+* Expiry and storage location tracking
 
-Role-based access control (Admin, Engineer, Doctor, Staff)
+### 📋 Compliance & Audits
 
-🧑‍⚕️ Patient Management
+* Compliance standards (NABH, AERB, internal)
+* Audit scheduling and history
+* Compliance document uploads
+* Exportable reports (CSV)
 
-Patient profiles with demographics
+### 🧠 AI-Assisted Diagnostics (Experimental)
 
-Medical history, vitals, medications
+* Medical image analysis using Google Gemini AI
+* Pneumonia detection (X-ray)
+* Brain tumor detection (MRI)
 
-Appointments & emergency contacts
+⚠️ AI features are **assistive only** and must be reviewed by qualified medical professionals.
 
-Doctor assignment & visit tracking
+### 📊 Dashboard & Analytics
 
-🛠 Medical Device Lifecycle Management
+* Inventory health metrics
+* Devices under maintenance
+* Calibration due alerts
+* Supplier activity
+* Monthly operational trends
 
-Complete device registry per hospital
+---
 
-QR-code based device identification
+## 🧱 Tech Stack
 
-Track:
+### Frontend
 
-Installation
+* React + TypeScript
+* Tailwind CSS
+* Shadcn/UI
+* Capacitor (Android & iOS)
 
-Warranty
+### Backend
 
-Calibration schedules
+* Django
+* Django REST Framework
+* JWT Authentication
+* Modular app-based architecture
 
-Maintenance history
+### Database
 
-Incident reporting & service logs
+* PostgreSQL (Production)
+* SQLite (Local development)
 
-NFC / QR scan support for mobile workflows
+### AI
 
-📦 Inventory & Procurement
+* Google Gemini AI (image analysis)
 
-Categorized inventory system
+### DevOps
 
-Stock level tracking & reorder alerts
+* Docker & Docker Compose
+* Nginx
+* Gunicorn
 
-Suppliers & purchase orders
+---
 
-Expiry tracking & storage location management
+## 🗂 Project Structure
 
-📋 Compliance & Audits
-
-Compliance standards (NABH, AERB, etc.)
-
-Audit scheduling & history
-
-Compliance document uploads
-
-Exportable compliance reports (CSV)
-
-🧠 AI-Assisted Diagnostics (Experimental)
-
-Medical image analysis using Google Gemini AI
-
-Currently supports:
-
-Pneumonia detection (X-ray)
-
-Brain tumor detection (MRI)
-
-Designed as decision-support, not diagnosis
-
-⚠️ Disclaimer: AI results are assistive only and must be reviewed by qualified medical professionals.
-
-📊 Operational Dashboard
-
-Inventory health metrics
-
-Device maintenance status
-
-Calibration alerts
-
-Supplier activity
-
-Monthly trends & charts
-
-🧱 Tech Stack
-Frontend
-
-React + TypeScript
-
-Tailwind CSS
-
-Shadcn/UI
-
-Capacitor (mobile support)
-
-Backend
-
-Django & Django REST Framework
-
-JWT Authentication
-
-Role-based permissions
-
-Modular app architecture
-
-Database
-
-PostgreSQL (production)
-
-SQLite (local testing)
-
-AI
-
-Google Gemini AI (image analysis)
-
-DevOps
-
-Docker & Docker Compose
-
-Nginx
-
-Gunicorn
-
-🗂 Project Structure
+```
 backend/
 ├── hospitals/
 ├── employees/
@@ -174,35 +136,32 @@ backend/
 ├── Dockerfile
 ├── requirements.txt
 └── seed.py
+```
 
+Each module is self-contained with its own models, serializers, views, and routes.
 
-Each module is self-contained with:
+---
 
-models
+## 🚀 Getting Started
 
-serializers
+### Prerequisites
 
-views
+* Docker & Docker Compose
+* Python 3.10+
+* PostgreSQL (optional if using Docker)
 
-URLs
+### Clone the Repository
 
-🚀 Getting Started (Local Setup)
-1️⃣ Prerequisites
-
-Docker & Docker Compose
-
-Python 3.10+
-
-PostgreSQL (if running without Docker)
-
-2️⃣ Clone the Repository
+```bash
 git clone https://github.com/Yogesh-MG/Meditrackpro.git
 cd Meditrackpro
+```
 
-3️⃣ Environment Variables
+### Environment Variables
 
-Create a .env file:
+Create a `.env` file:
 
+```env
 DJANGO_SECRET_KEY=your_secret_key
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
@@ -213,101 +172,106 @@ DB_PASSWORD=postgres
 TIME_ZONE=Asia/Kolkata
 
 GEMINI_API_KEY=your_gemini_api_key
+```
 
-4️⃣ Run with Docker
+### Run with Docker
+
+```bash
 docker-compose up --build
-
+```
 
 Backend will be available at:
 
+```
 http://localhost:8000
+```
 
-5️⃣ Seed Demo Data (Optional but Recommended)
+### Seed Demo Data (Optional)
+
+```bash
 docker-compose exec backend python manage.py seed
+```
 
+This generates sample hospitals, devices, patients, inventory, suppliers, and compliance data.
 
-This creates:
+---
 
-Multiple hospitals
+## 🔐 Authentication
 
-Employees (doctors, engineers, staff)
+* JWT-based authentication
+* Token endpoints:
 
-Devices with service logs
+  * `/api/token/`
+  * `/api/token/refresh/`
 
-Inventory, suppliers, patients, compliance data
+All APIs are authenticated by default.
 
-🔐 Authentication
+---
 
-JWT-based authentication
+## 🧪 Testing
 
-Token endpoints:
+Current testing support:
 
-/api/token/
+* Basic test scaffolding in each module
+* Manual API validation during development
 
-/api/token/refresh/
+Planned:
 
-All APIs are protected by default.
+* Serializer unit tests
+* Permission tests
+* Multi-tenant isolation tests
 
-🧪 Testing Status
+Run tests:
 
-Basic API testing structure in place
+```bash
+python manage.py test
+```
 
-Extensive test coverage is a planned contribution area
+---
 
-🧭 Roadmap
+## 🧭 Roadmap
 
-Planned improvements:
+* Role-specific dashboards
+* Notification system
+* Audit trail logging
+* Advanced analytics
+* HL7 / FHIR interoperability
+* Offline-first mobile workflows
 
-Role-based dashboards
+---
 
-Real-time notifications
+## 🤝 Contributing
 
-Audit trail logging
-
-Advanced analytics
-
-HL7 / FHIR integration
-
-Offline-first mobile mode
-
-🤝 Contributing
-
-We welcome contributions from:
-
-Developers
-
-Healthcare IT teams
-
-Biomedical engineers
+Contributions are welcome!
 
 How to contribute:
 
-Fork the repo
+1. Fork the repository
+2. Create a feature branch
+3. Follow existing code patterns
+4. Submit a pull request with a clear description
 
-Create a feature branch
+---
 
-Follow existing code patterns
+## ⚠️ Medical & Legal Disclaimer
 
-Submit a pull request with clear description
+MediTrackPros is **not a certified medical device**.
 
-⚠️ Medical & Legal Disclaimer
+* AI features are assistive only
+* Clinical decisions must be made by licensed professionals
+* Hospitals are responsible for compliance, security, and validation
 
-MediTrackPros does not replace certified hospital systems and does not provide medical diagnosis.
+---
 
-AI features are assistive tools only
+## 📄 License
 
-Hospitals are responsible for compliance, validation, and regulatory approval
+This project is licensed under the **MIT License**.
 
-Use in production environments at your own discretion
+---
 
-📄 License
+## 📬 Maintainer
 
-This project is released under the MIT License.
-You are free to use, modify, and distribute it with attribution.
+**Yogesh M**
+GitHub: [https://github.com/Yogesh-MG](https://github.com/Yogesh-MG)
 
-📬 Contact & Maintainer
-
-Maintainer: Yogesh M
-GitHub: https://github.com/Yogesh-MG
-
-If you’re a hospital, startup, or researcher interested in deploying or extending this system, feel free to reach out.
+If you are a hospital, healthcare startup, or researcher interested in deploying or extending MediTrackPros, feel free to reach out.
